@@ -136,6 +136,12 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/keighl/metabolize",
+			"repository": "https://github.com/keighl/metabolize",
+			"revision": "97ab655d403458d6b62b54003d5cf480f379ac5d",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/matrix-org/dugong",
 			"repository": "https://github.com/matrix-org/dugong",
 			"revision": "193b8f88e381d12f2d53023fba25e43fc81dc5ac",
@@ -182,6 +188,12 @@
 			"importpath": "github.com/mmcdole/goxpp",
 			"repository": "https://github.com/mmcdole/goxpp",
 			"revision": "e38884aa48c1952a416ba35f3c276e4f02f9b40e",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/patrickmn/go-cache",
+			"repository": "https://github.com/patrickmn/go-cache",
+			"revision": "5633e0862627c011927fa39556acae8b1f1df58a",
 			"branch": "master"
 		},
 		{
