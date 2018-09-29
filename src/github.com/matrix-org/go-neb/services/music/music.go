@@ -2,9 +2,10 @@
 package echo
 
 import (
+	"mvdan.cc/xurls"
+
 	"sync"
 	"fmt"
-	"regexp"
 	"net/url"
 	"net/http"
 	"time"
@@ -17,7 +18,7 @@ import (
 	"github.com/matrix-org/gomatrix"
 )
 
-var spotifyRegex = regexp.MustCompile("https?://[^ ]+")
+var urlRegex = xurls.Strict()
 
 // ServiceType of the music service
 const ServiceType = "music"
@@ -77,7 +78,7 @@ func (s *Service) Expansions(cli *gomatrix.Client) []types.Expansion {
 
 	return []types.Expansion{
 		types.Expansion{
-			Regexp: spotifyRegex,
+			Regexp: urlRegex,
 			Expand: func(roomID, userID string, urlGroups []string) interface{} {
 				metadata, err := fetchURL(cli, lock, cache, urlGroups[0])
 				if err != nil {
@@ -92,7 +93,7 @@ func (s *Service) Expansions(cli *gomatrix.Client) []types.Expansion {
 			},
 		},
 		types.Expansion{
-			Regexp: spotifyRegex,
+			Regexp: urlRegex,
 			Expand: func(roomID, userID string, urlGroups []string) interface{} {
 				metadata, err := fetchURL(cli, lock, cache, urlGroups[0])
 				if err != nil {
