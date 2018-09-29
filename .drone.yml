@@ -1,0 +1,7 @@
+pipeline:
+  publish:
+    image: plugins/docker
+    secrets: [ DOCKER_USERNAME, DOCKER_PASSWORD ]
+    repo: justinbarrick/go-neb
+    tags:
+    - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
