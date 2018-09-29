@@ -111,8 +111,8 @@ func (s *Service) Expansions(cli *gomatrix.Client) []types.Expansion {
 					Body: metadata.Title,
 					URL: metadata.UploadedUrl,
 					Info: gomatrix.ImageInfo{
-						Height: 60,
-						Width: 60,
+						Height: 180,
+						Width: 180,
 					},
 				}
 			},
