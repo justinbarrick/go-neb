@@ -110,8 +110,33 @@ func (s *Service) Expansions(cli *gomatrix.Client) []types.Expansion {
 
 				return gomatrix.GetHTMLMessage(
 					"m.notice",
-					fmt.Sprintf("<img src=\"%s\" width=\"120\" height=\"120\"></img><br><a href=\"%s\">%s</a><div>%s</div>", metadata.UploadedUrl, metadata.URL.String(), metadata.Title, metadata.Description),
+					fmt.Sprintf("<a href=\"%s\">%s</a><br>%s", metadata.URL.String(), metadata.Title, metadata.Description),
 				)
+			},
+		},
+		types.Expansion{
+			Regexp: urlRegex,
+			Expand: func(roomID, userID string, urlGroups []string) interface{} {
+				metadata, err := fetchURL(cli, lock, cache, urlGroups[0])
+				if err != nil {
+					logrus.Warning("Got error fetching URL:", err)
+					return nil
+				}
+
+				if metadata.UploadedUrl == "" {
+					logrus.Warning("No image!")
+					return nil
+				}
+
+				return gomatrix.ImageMessage{
+					MsgType: "m.image",
+					Body: "",
+					URL: metadata.UploadedUrl,
+					Info: gomatrix.ImageInfo{
+						Height: 180,
+						Width: 180,
+					},
+				}
 			},
 		},
 	}
