@@ -4,6 +4,7 @@ package echo
 import (
 	"mvdan.cc/xurls"
 
+	"errors"
 	"sync"
 	"fmt"
 	"net/url"
@@ -50,9 +51,22 @@ func fetchURL(client *gomatrix.Client, lock *sync.Mutex, urlCache *cache.Cache, 
 		return cachedMetadata.(*MetaData), nil
 	}
 
-	res, err := http.Get(fetchUrl)
+	httpClient := &http.Client{}
+
+	req, err := http.NewRequest("GET", fetchUrl, nil)
 	if err != nil {
 		return nil, err
+	}
+
+	req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0")
+
+	res, err := httpClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode != 200 {
+		return nil, errors.New(fmt.Sprintf("Status code %d is not 200", res.StatusCode))
 	}
 
 	err = m.Metabolize(res.Body, metadata)
@@ -83,6 +97,14 @@ func (s *Service) Expansions(cli *gomatrix.Client) []types.Expansion {
 				metadata, err := fetchURL(cli, lock, cache, urlGroups[0])
 				if err != nil {
 					logrus.Warning("Got error fetching URL:", err)
+					return gomatrix.GetHTMLMessage(
+						"m.notice",
+						fmt.Sprintf("Error fetching: %s", err.Error()),
+					)
+				}
+
+				if metadata.Description == "" {
+					logrus.Warning("No description!")
 					return nil
 				}
 
@@ -108,7 +130,7 @@ func (s *Service) Expansions(cli *gomatrix.Client) []types.Expansion {
 
 				return gomatrix.ImageMessage{
 					MsgType: "m.image",
-					Body: metadata.Title,
+					Body: "",
 					URL: metadata.UploadedUrl,
 					Info: gomatrix.ImageInfo{
 						Height: 180,
