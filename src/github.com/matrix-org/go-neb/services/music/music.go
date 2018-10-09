@@ -106,7 +106,9 @@ func fetchURL(client *gomatrix.Client, lock *sync.Mutex, urlCache *cache.Cache, 
 		return cachedMetadata.(*MetaData), nil
 	}
 
-	httpClient := &http.Client{}
+	httpClient := &http.Client{
+		Timeout: 3 * time.Second,
+	}
 
 	parsedUrl, err := url.Parse(fetchUrl)
 	if err != nil {
