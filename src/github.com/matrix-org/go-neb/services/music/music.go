@@ -131,7 +131,7 @@ func fetchURL(client *gomatrix.Client, lock *sync.Mutex, urlCache *cache.Cache, 
 		return nil, errors.New(fmt.Sprintf("Status code %d is not 200", res.StatusCode))
 	}
 
-	body, err := ioutil.ReadAll(io.LimitedReader(res.Body, 2*1024*1024))
+	body, err := ioutil.ReadAll(io.LimitedReader{res.Body, 2*1024*1024})
 	if err != nil {
 		return nil, err
 	}
